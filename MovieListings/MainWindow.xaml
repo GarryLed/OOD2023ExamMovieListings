@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MovieListings"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
     <Grid>
         <Label Content="Movie Listings" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" FontSize="18"/>
         <Label Content="Movie Synopsis&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,10,0,0" VerticalAlignment="Top" FontSize="18"/>

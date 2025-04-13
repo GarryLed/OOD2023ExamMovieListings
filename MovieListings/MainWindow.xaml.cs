@@ -28,6 +28,13 @@ namespace MovieListings
             InitializeComponent();
         }
 
+        // display movie data on initial window load 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            tblkAvailableSeats.Text = "100";
+            DisplayInitialMovieTitles();
+        }
+
         // book seats button 
         private void btnBookSeats_Click(object sender, RoutedEventArgs e)
         {
@@ -65,7 +72,7 @@ namespace MovieListings
                     // count the total number of tickets sold for movie 
                     int totalTicketsSold = results.Sum(p => p.NumberOfTickets);
 
-                    // get required tickets 
+                    // get total required tickets 
                     int requiredTickets = int.Parse(tbxRequiredSeats.Text);
                     
                     // get current abailable seats 
@@ -104,6 +111,31 @@ namespace MovieListings
 
         }
 
-        
+        // update ui with refreshing screen 
+        public void RefreshScreen()
+        {
+            
+            tblkAvailableSeats.Text = "100";
+
+          
+        }
+
+        // load initial movies 
+        private void DisplayInitialMovieTitles()
+        {
+            using (db)
+            {
+                // LINQ query to display movie titles in list box 
+                var movies = from m in db.Movies
+                             where m.Title != null
+                             orderby m.Title ascending
+                             select m;
+
+                var results = movies.ToList();
+                lbxMovieListings.ItemsSource = results;
+            }
+        }
+
+       
     }
 }
