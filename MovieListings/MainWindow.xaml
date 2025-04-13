@@ -7,6 +7,19 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-        
+        <Label Content="Movie Listings" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" FontSize="18"/>
+        <Label Content="Movie Synopsis&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,10,0,0" VerticalAlignment="Top" FontSize="18"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN"/>
+        <Button x:Name="btnBookSeats" Content="Book Seats" HorizontalAlignment="Left" Margin="693,395,0,0" VerticalAlignment="Top" Click="btnBookSeats_Click"/>
+        <Label Content="Quick Book&#xD;&#xA;" HorizontalAlignment="Left" Margin="23,334,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
+        <Label Content="Select movie from list above&#xA;" HorizontalAlignment="Left" Margin="23,363,0,0" VerticalAlignment="Top"/>
+        <Label Content="Choose date and tickets required&#xD;&#xA;" HorizontalAlignment="Left" Margin="23,392,0,0" VerticalAlignment="Top"/>
+        <DatePicker HorizontalAlignment="Left" Margin="239,391,0,0" VerticalAlignment="Top"/>
+        <Label Content="Available Seats&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,355,0,0" VerticalAlignment="Top"/>
+        <Label Content="Available Seats&#xA;" HorizontalAlignment="Left" Margin="542,355,0,0" VerticalAlignment="Top"/>
+        <TextBox HorizontalAlignment="Left" Margin="542,397,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBlock HorizontalAlignment="Left" Margin="445,397,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
+
     </Grid>
 </Window>

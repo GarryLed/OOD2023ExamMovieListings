@@ -24,5 +24,11 @@ namespace MovieListings
         {
             InitializeComponent();
         }
+
+        // book seats button 
+        private void btnBookSeats_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
