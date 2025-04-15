@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Data.Entity;
 
 namespace MovieListings
 {
@@ -20,8 +21,8 @@ namespace MovieListings
     /// </summary>
     public partial class MainWindow : Window
     {
-        MovieData db = new MovieData();
-
+         MovieData db = new MovieData();
+        private readonly int TotalCapacity = 100; 
 
         public MainWindow()
         {
@@ -31,15 +32,50 @@ namespace MovieListings
         // display movie data on initial window load 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            tblkAvailableSeats.Text = "100";
+            RefreshScreen();
             DisplayInitialMovieTitles();
         }
 
         // book seats button 
         private void btnBookSeats_Click(object sender, RoutedEventArgs e)
         {
+            // store selected movie 
+            var selectedMovie = lbxMovieListings.SelectedItem as Movie;
 
+            // store selected date 
+            var selectedDate = dpshowMovie.SelectedDate.Value;
+
+            // check existing moves 
+            var existingMovies = db.Bookings
+                .Where(b => b.MovieId == selectedMovie.MovieId && b.BookingDate == selectedDate).ToList();
+
+            // store number of required seats
+            int requiredSeats = int.Parse(tbxRequiredSeats.Text); // add validaton here 
+
+            // count total tickets booked for movie 
+            int totalTicketsBooked = existingMovies.Sum(b => b.NumberOfTickets);
+
+            // count available seats 
+            int availableSeats = TotalCapacity - totalTicketsBooked;
+
+            // create and saving booking to database 
+            var newBooking = new Booking
+            {
+                MovieId = selectedMovie.MovieId,
+                BookingDate = selectedDate,
+                NumberOfTickets = requiredSeats
+            };
+
+            db.Bookings.Add(newBooking);
+            db.SaveChanges();
+
+            // display success message 
+            MessageBox.Show("Booking was successful");
+
+            tblkAvailableSeats.Text = (availableSeats - requiredSeats).ToString();
+            SearchByDate(selectedDate);
         }
+
 
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -76,28 +112,24 @@ namespace MovieListings
                     int requiredTickets = int.Parse(tbxRequiredSeats.Text);
                     
                     // get current abailable seats 
-                    int currentAvailableSeats = (100 - totalTicketsSold);
+                    int availableSeats = (TotalCapacity - totalTicketsSold);
 
-                    if (currentAvailableSeats >= requiredTickets)
+                    if (availableSeats >= requiredTickets)
                     {
-                        tblkAvailableSeats.Text = currentAvailableSeats.ToString();
+                        tblkAvailableSeats.Text = availableSeats.ToString();
                     }
                     else
                     {
                         MessageBox.Show("Sold Out");
-                        // return from here? 
+                        tblkAvailableSeats.Text = "0";
+                        return; 
                     }
-                   
-                    
-
-                    // update abailability (total capacity - total participants) 
-                    tblkAvailableSeats.Text = (100 - requiredTickets) + "%";
-
                 }
                 else
                 {
+                    lbxMovieListings.ItemsSource = null; 
                     // refresh screen if no result is found 
-                    //RefreshScreen();
+                    RefreshScreen();
                 }
             }
             catch (Exception ex)
@@ -108,14 +140,20 @@ namespace MovieListings
 
         private void lbxMovieListings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            // when movie title  is selected, a synopsis will be displayed in the text block on the right of the screen 
 
+            if (lbxMovieListings.SelectedItem is Movie selectedMovie)
+            {
+                tblkMovieSynopsis.Text = selectedMovie.Description;
+            }
         }
 
         // update ui with refreshing screen 
         public void RefreshScreen()
         {
             
-            tblkAvailableSeats.Text = "100";
+            tblkAvailableSeats.Text =  TotalCapacity.ToString();
+            tblkMovieSynopsis.Text = "";
 
           
         }
@@ -126,13 +164,12 @@ namespace MovieListings
             using (db)
             {
                 // LINQ query to display movie titles in list box 
-                var movies = from m in db.Movies
-                             where m.Title != null
-                             orderby m.Title ascending
-                             select m;
-
-                var results = movies.ToList();
-                lbxMovieListings.ItemsSource = results;
+                var movies = db.Movies
+                    .Where(m => m.Title != null)
+                    .OrderBy(m => m.Title)
+                    .ToList();
+                             
+                lbxMovieListings.ItemsSource = movies;
             }
         }
 

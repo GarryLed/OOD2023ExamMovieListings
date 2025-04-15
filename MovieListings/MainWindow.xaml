@@ -10,7 +10,7 @@
         <Label Content="Movie Listings" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" FontSize="18"/>
         <Label Content="Movie Synopsis&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,10,0,0" VerticalAlignment="Top" FontSize="18"/>
         <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN"/>
-        <ListBox x:Name="lbxMovieListings" d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN" SelectionChanged="lbxMovieListings_SelectionChanged"/>
+        <ListBox x:Name="lbxMovieListings" DisplayMemberPath="Title" d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN" SelectionChanged="lbxMovieListings_SelectionChanged"/>
         <Button x:Name="btnBookSeats" Content="Book Seats" HorizontalAlignment="Left" Margin="693,395,0,0" VerticalAlignment="Top" Click="btnBookSeats_Click"/>
         <Label Content="Quick Book&#xD;&#xA;" HorizontalAlignment="Left" Margin="23,334,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         <Label Content="Select movie from list above&#xA;" HorizontalAlignment="Left" Margin="23,363,0,0" VerticalAlignment="Top"/>
@@ -18,7 +18,7 @@
         <DatePicker x:Name="dpshowMovie" HorizontalAlignment="Left" Margin="239,391,0,0" VerticalAlignment="Top" SelectedDateChanged="DatePicker_SelectedDateChanged"/>
         <Label Content="Available Seats&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,355,0,0" VerticalAlignment="Top"/>
         <Label Content="Required Seats&#xA;" HorizontalAlignment="Left" Margin="542,355,0,0" VerticalAlignment="Top"/>
-        <TextBox x:Name="tbxRequiredSeats" HorizontalAlignment="Left" Margin="542,397,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120" />
+        <TextBox x:Name="tbxRequiredSeats" HorizontalAlignment="Left" Margin="542,397,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" />
         <TextBlock x:Name="tblkAvailableSeats" HorizontalAlignment="Left" Margin="445,397,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top"/>
         <TextBlock x:Name="tblkMovieSynopsis" HorizontalAlignment="Left" Margin="414,53,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="276" Width="310"/>
 

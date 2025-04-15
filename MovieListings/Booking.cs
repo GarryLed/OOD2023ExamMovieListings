@@ -21,10 +21,6 @@ namespace MovieListings
         public virtual Movie Movie { get; set; }
 
 
-        // override to string method 
-        public override string ToString()
-        {
-            return $""; 
-        }
+       
     }
 }
