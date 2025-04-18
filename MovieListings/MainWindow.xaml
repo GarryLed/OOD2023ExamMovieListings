@@ -10,7 +10,26 @@
         <Label Content="Movie Listings" HorizontalAlignment="Left" Margin="23,10,0,0" VerticalAlignment="Top" FontSize="18"/>
         <Label Content="Movie Synopsis&#xD;&#xA;" HorizontalAlignment="Left" Margin="425,10,0,0" VerticalAlignment="Top" FontSize="18"/>
         <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN"/>
-        <ListBox x:Name="lbxMovieListings" DisplayMemberPath="Title" d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN" SelectionChanged="lbxMovieListings_SelectionChanged"/>
+      <!--  <ListBox x:Name="lbxMovieListings" DisplayMemberPath="Title" d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN" SelectionChanged="lbxMovieListings_SelectionChanged"/>  -->
+        <!-- Updated List box -->
+        <ListBox x:Name="lbxMovieListings"
+         Margin="23,49,459,105"
+         SelectionChanged="lbxMovieListings_SelectionChanged"
+         ItemsSource="{Binding}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal" Margin="5">
+                        <Image Source="{Binding ImageName}" Height="80" Width="60" Margin="5"/>
+                        <StackPanel Orientation="Vertical" Margin="10,0,0,0">
+                            <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold"/>
+                            <TextBlock Text="{Binding Cast}" FontStyle="Italic" Foreground="Gray"/>
+                        </StackPanel>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+<!-- end of updated list box -->
+
         <Button x:Name="btnBookSeats" Content="Book Seats" HorizontalAlignment="Left" Margin="693,395,0,0" VerticalAlignment="Top" Click="btnBookSeats_Click"/>
         <Label Content="Quick Book&#xD;&#xA;" HorizontalAlignment="Left" Margin="23,334,0,0" VerticalAlignment="Top" FontWeight="Bold"/>
         <Label Content="Select movie from list above&#xA;" HorizontalAlignment="Left" Margin="23,363,0,0" VerticalAlignment="Top"/>

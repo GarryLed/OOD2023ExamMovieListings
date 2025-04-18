@@ -15,7 +15,7 @@ namespace MovieListings
         public DateTime BookingDate { get; set; }
         public int NumberOfTickets { get; set; }
 
-        // foreign key and relationship 
+        // foreign key and relationship for Movie class 
         public int MovieId { get; set; }
 
         public virtual Movie Movie { get; set; }
