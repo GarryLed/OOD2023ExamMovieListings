@@ -39,26 +39,42 @@ namespace MovieListings
         // book seats button 
         private void btnBookSeats_Click(object sender, RoutedEventArgs e)
         {
-            // store selected movie 
             var selectedMovie = lbxMovieListings.SelectedItem as Movie;
+            if (selectedMovie == null)
+            {
+                MessageBox.Show("Please select a movie.");
+                return;
+            }
 
-            // store selected date 
-            var selectedDate = dpshowMovie.SelectedDate.Value;
 
-            // check existing moves 
-            var existingMovies = db.Bookings
-                .Where(b => b.MovieId == selectedMovie.MovieId && b.BookingDate == selectedDate).ToList();
+            if (!dpshowMovie.SelectedDate.HasValue)
+            {
+                MessageBox.Show("Please select a valid date.");
+                return;
+            }
 
-            // store number of required seats
-            int requiredSeats = int.Parse(tbxRequiredSeats.Text); // add validaton here 
+            DateTime selectedDate = dpshowMovie.SelectedDate.Value;
 
-            // count total tickets booked for movie 
-            int totalTicketsBooked = existingMovies.Sum(b => b.NumberOfTickets);
 
-            // count available seats 
-            int availableSeats = TotalCapacity - totalTicketsBooked;
+            if (!int.TryParse(tbxRequiredSeats.Text, out int requiredSeats) || requiredSeats <= 0)
+            {
+                MessageBox.Show("Please enter a valid number of seats.");
+                return;
+            }
 
-            // create and saving booking to database 
+            var existingBookings = db.Bookings
+                .Where(b => b.MovieId == selectedMovie.MovieId && b.BookingDate == selectedDate)
+                .ToList();
+
+            int totalBooked = existingBookings.Sum(b => b.NumberOfTickets);
+            int availableSeats = TotalCapacity - totalBooked;
+
+            if (availableSeats < requiredSeats)
+            {
+                MessageBox.Show($"Only {availableSeats} seats are available. Please choose a smaller number.");
+                return;
+            }
+
             var newBooking = new Booking
             {
                 MovieId = selectedMovie.MovieId,
@@ -69,14 +85,11 @@ namespace MovieListings
             db.Bookings.Add(newBooking);
             db.SaveChanges();
 
-            // display success message 
-            MessageBox.Show("Booking was successful");
-
+            MessageBox.Show("Booking successful!");
             tblkAvailableSeats.Text = (availableSeats - requiredSeats).ToString();
+
             SearchByDate(selectedDate);
         }
-
-
         private void DatePicker_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
         {
             DateTime selectedDate = dpshowMovie.SelectedDate.Value;
@@ -93,50 +106,46 @@ namespace MovieListings
         {
             try
             {
-                // LINQ for database query 
-                var query = from b in db.Bookings
-                            where b.BookingDate == selectedDate
-                            select b;
-                var results = query.ToList();
+                // Get all bookings for the selected date
+                var bookingsOnDate = db.Bookings
+                    .Include(b => b.Movie)
+                    .Where(b => DbFunctions.TruncateTime(b.BookingDate) == selectedDate.Date)
+                    .ToList();
 
-                // check if booking is on the selected date, and update 
-                if (results.Count > 0)
+                // Get unique movies booked on that date
+                var moviesOnDate = bookingsOnDate
+                    .Select(b => b.Movie)
+                    .Distinct()
+                    .ToList();
+
+                if (moviesOnDate.Any())
                 {
-                    // update list box 
-                    lbxMovieListings.ItemsSource = results; // set the list box items to the results from the database query above 
+                    lbxMovieListings.ItemsSource = moviesOnDate;
 
-                    // count the total number of tickets sold for movie 
-                    int totalTicketsSold = results.Sum(p => p.NumberOfTickets);
-
-                    // get total required tickets 
-                    int requiredTickets = int.Parse(tbxRequiredSeats.Text);
-                    
-                    // get current abailable seats 
-                    int availableSeats = (TotalCapacity - totalTicketsSold);
-
-                    if (availableSeats >= requiredTickets)
+                   
+                    var firstMovie = moviesOnDate.FirstOrDefault();
+                    if (firstMovie != null)
                     {
+                        int totalTicketsSold = bookingsOnDate
+                            .Where(b => b.MovieId == firstMovie.MovieId)
+                            .Sum(b => b.NumberOfTickets);
+
+                        int availableSeats = TotalCapacity - totalTicketsSold;
                         tblkAvailableSeats.Text = availableSeats.ToString();
-                    }
-                    else
-                    {
-                        MessageBox.Show("Sold Out");
-                        tblkAvailableSeats.Text = "0";
-                        return; 
                     }
                 }
                 else
                 {
-                    lbxMovieListings.ItemsSource = null; 
-                    // refresh screen if no result is found 
+                    lbxMovieListings.ItemsSource = null;
                     RefreshScreen();
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Sorry, error occured when trying to connect to database" + ex.Message);
+                MessageBox.Show("Error loading bookings: " + ex.Message);
             }
         }
+
 
         private void lbxMovieListings_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -161,18 +170,21 @@ namespace MovieListings
         // load initial movies 
         private void DisplayInitialMovieTitles()
         {
-            using (db)
+            try
             {
-                // LINQ query to display movie titles in list box 
                 var movies = db.Movies
-                    .Where(m => m.Title != null)
+                    .Where(m => !string.IsNullOrEmpty(m.Title))
                     .OrderBy(m => m.Title)
                     .ToList();
-                             
+
                 lbxMovieListings.ItemsSource = movies;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Failed to load movies: " + ex.Message);
             }
         }
 
-       
+
     }
 }
