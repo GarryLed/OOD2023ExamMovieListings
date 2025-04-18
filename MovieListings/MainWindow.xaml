@@ -13,13 +13,13 @@
       <!--  <ListBox x:Name="lbxMovieListings" DisplayMemberPath="Title" d:ItemsSource="{d:SampleData ItemCount=5}" Height="NaN" Margin="23,49,459,105" Width="NaN" SelectionChanged="lbxMovieListings_SelectionChanged"/>  -->
         <!-- Updated List box -->
         <ListBox x:Name="lbxMovieListings"
-         Margin="23,49,459,105"
+         Margin="23,49,400,105"
          SelectionChanged="lbxMovieListings_SelectionChanged"
          ItemsSource="{Binding}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal" Margin="5">
-                        <Image Source="{Binding ImageName}" Height="80" Width="60" Margin="5"/>
+                        <Image Source="{Binding ImageName}" Height="60" Width="50" Margin="5"/>
                         <StackPanel Orientation="Vertical" Margin="10,0,0,0">
                             <TextBlock Text="{Binding Title}" FontSize="16" FontWeight="Bold"/>
                             <TextBlock Text="{Binding Cast}" FontStyle="Italic" Foreground="Gray"/>
